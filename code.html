@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM - Le Diable au corps</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 15px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #b30000;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            position: relative;
+            height: 25px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #4caf50;
+            border-radius: 30px;
+            transition: width 0.4s ease-in-out;
+            text-align: center;
+            line-height: 25px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .question-container {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .question {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .options label {
+            display: block;
+            background-color: #f9f9f9;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .options label:hover {
+            background-color: #f0f0f0;
+            border-color: #b30000;
+        }
+        /* Styles for after an answer is checked */
+        .options.answered label {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .options.answered label:hover {
+             background-color: #f9f9f9; /* Prevent hover effect on answered questions */
+             border-color: #ddd;
+        }
+        .options label.user-correct {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        .options label.user-incorrect {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+        .options label.reveal-correct {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+            font-weight: bold;
+        }
+        
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        .check-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(45deg, #d6336c, #b30000);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .check-btn:hover {
+            opacity: 0.9;
+        }
+        .check-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 1;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            display: none;
+        }
+        .correct {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+        }
+        .incorrect {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+        #score {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f0f2f5;
+            color: #333;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        #score.good { background-color: #e8f5e9; color: #2e7d32; }
+        #score.medium { background-color: #fff3e0; color: #ef6c00; }
+        #score.bad { background-color: #ffebee; color: #c62828; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>QCM : Le Diable au corps</h1>
+    <p>Testez vos connaissances sur l'œuvre de Raymond Radiguet. Répondez à une question, vérifiez votre réponse et continuez !</p>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar">0/50</div>
+    </div>
+    
+    <div id="score">Score : 0 / 50</div>
+
+    <form id="qcmForm">
+        <!-- Les questions sont structurées de la même manière. -->
+        <!-- Chaque question a son propre bouton "Vérifier la réponse" -->
+        <!-- qui appelle checkSingleAnswer() avec son numéro unique. -->
+        
+        <!-- Questions 1-10 : L'Intrigue et les Événements Clés -->
+        <div class="question-container">
+            <p class="question">1. Quel événement majeur sert de toile de fond au roman ?</p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="correct"> La Première Guerre mondiale</label>
+                <label><input type="radio" name="q1" value="incorrect"> La Révolution française</label>
+                <label><input type="radio" name="q1" value="incorrect"> L'Occupation allemande de 1940</label>
+            </div>
+            <div id="feedback1" class="feedback"><b>Réponse :</b> La Première Guerre mondiale.</div>
+            <button type="button" class="check-btn" onclick="checkSingleAnswer(1, this)">Vérifier la réponse</button>
+        </div>
+        <div class="question-container">
+            <p class="question">2. Comment le narrateur, François, perçoit-il la guerre ?</p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="incorrect"> Comme une tragédie nationale</label>
+                <label><input type="radio" name="q2" value="correct"> Comme "quatre ans de grandes vacances"</label>
+                <label><input type="radio" name="q2" value="incorrect"> Comme une occasion de s'engager</label>
+            </div>
+            <div id="feedback2" class="feedback"><b>Réponse :</b> Comme "quatre ans de grandes vacances", une citation célèbre qui a provoqué le scandale.</div>
+            <button type="button" class="check-btn" onclick="checkSingleAnswer(2, this)">Vérifier la réponse</button>
+        </div>
+        <div class="question-container">
+            <p class="question">3. Où François et Marthe se rencontrent-ils pour la première fois ?</p>
+            <div class="options">
+                <label><input type="radio" name="q3" value="incorrect"> À un bal</label>
+                <label><input type="radio" name="q3" value="incorrect"> À l'école</label>
+                <label><input type="radio" name="q3" value="correct"> Sur le quai d'une gare</label>
+            </div>
+            <div id="feedback3" class="feedback"><b>Réponse :</b> Sur le quai de la gare de La Varenne.</div>
+            <button type="button" class="check-btn" onclick="checkSingleAnswer(3, this)">Vérifier la réponse</button>
+        </div>
+
+        <!-- ... Le même modèle est à appliquer pour TOUTES les 50 questions ... -->
+        <!-- Voici quelques exemples supplémentaires pour bien montrer la structure -->
+
+        <div class="question-container">
+            <p class="question">4. Que fait Marthe qui charme immédiatement François lors de leur rencontre ?</p>
+            <div class="options">
+                <label><input type="radio" name="q4" value="correct"> Elle crie à sa mère "Attends bien que le train s'arrête"</label>
+                <label><input type="radio" name="q4" value="incorrect"> Elle lui offre une fleur</label>
+                <label><input type="radio" name="q4" value="incorrect"> Elle lui demande son chemin</label>
+            </div>
+            <div id="feedback4" class="feedback"><b>Réponse :</b> Son imprudence sur le marchepied du train le séduit.</div>
+            <button type="button" class="check-btn" onclick="checkSingleAnswer(4, this)">Vérifier la réponse</button>
+        </div>
+        <div class="question-container">
+            <p class="question">5. Quel mensonge Marthe fait-elle par téléphone pour passer sa première journée avec François ?</p>
+            <div class="options">
+                <label><input type="radio" name="q5" value="incorrect"> Elle prétend être malade</label>
+                <label><input type="radio" name="q5" value="correct"> Elle prétend être dans un quartier trop éloigné pour arriver à temps</label>
+                <label><input type="radio" name="q5" value="incorrect"> Elle dit que son train a été annulé</label>
+            </div>
+            <div id="feedback5" class="feedback"><b>Réponse :</b> Elle appelle sa belle-mère en disant qu'elle est trop loin.</div>
+            <button type="button" class="check-btn" onclick="checkSingleAnswer(5, this)">Vérifier la réponse</button>
+        </div>
+        
+        <!-- Continuez ce modèle pour les questions 6 à 49 -->
+
+        <div class="question-container">
+             <p class="question">6. Quel est le premier cadeau que reçoit François de Marthe ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q6" value="correct"> Un peignoir</label>
+                 <label><input type="radio" name="q6" value="incorrect"> Un livre de poésie</label>
+                 <label><input type="radio" name="q6" value="incorrect"> Une montre</label>
+             </div>
+             <div id="feedback6" class="feedback"><b>Réponse :</b> Un peignoir, semblable au sien, ce qui symbolise leur intimité.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(6, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">7. Comment se termine le roman pour Marthe ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q7" value="incorrect"> Elle part avec François</label>
+                 <label><input type="radio" name="q7" value="correct"> Elle meurt en accouchant</label>
+                 <label><input type="radio" name="q7" value="incorrect"> Elle retourne vivre avec son mari Jacques</label>
+             </div>
+             <div id="feedback7" class="feedback"><b>Réponse :</b> Elle meurt en couches, une fin tragique.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(7, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">8. Qui François rencontre-t-il à la toute fin du livre, apprenant les derniers mots de Marthe ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q8" value="correct"> Jacques, le mari de Marthe</label>
+                 <label><input type="radio" name="q8" value="incorrect"> Le père de Marthe</label>
+                 <label><input type="radio" name="q8" value="incorrect"> Son ami René</label>
+             </div>
+             <div id="feedback8" class="feedback"><b>Réponse :</b> Jacques, qui lui révèle que Marthe est morte en l'appelant.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(8, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">9. Quelle farce François fait-il à Marthe à propos du musée de l'Écu de France ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q9" value="correct"> Il lui fait croire que c'est un lieu fascinant alors que c'est une déception</label>
+                 <label><input type="radio" name="q9" value="incorrect"> Il lui fait croire qu'il est fermé</label>
+                 <label><input type="radio" name="q9" value="incorrect"> Il lui vole son billet d'entrée</label>
+             </div>
+             <div id="feedback9" class="feedback"><b>Réponse :</b> Il embellit ses souvenirs d'enfance et feint une plaisanterie quand la visite s'avère décevante.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(9, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">10. Quel événement précipite la fin du roman ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q10" value="incorrect"> Le retour définitif de Jacques</label>
+                 <label><input type="radio" name="q10" value="correct"> L'accouchement prématuré de Marthe</label>
+                 <label><input type="radio" name="q10" value="incorrect"> La découverte de la liaison par les parents de Marthe</label>
+             </div>
+             <div id="feedback10" class="feedback"><b>Réponse :</b> L'accouchement. L'enfant naît en janvier, deux mois avant terme, ce qui provoque une crise finale.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(10, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">11. Quel âge a Marthe au début du roman ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q11" value="incorrect"> 17 ans</label>
+                 <label><input type="radio" name="q11" value="correct"> 18 ans</label>
+                 <label><input type="radio" name="q11" value="incorrect"> 21 ans</label>
+             </div>
+             <div id="feedback11" class="feedback"><b>Réponse :</b> Elle a 18 ans (mentionné à la page 28).</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(11, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">12. Quel est le nom du mari de Marthe ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q12" value="correct"> Jacques</label>
+                 <label><input type="radio" name="q12" value="incorrect"> René</label>
+                 <label><input type="radio" name="q12" value="incorrect"> Paul</label>
+             </div>
+             <div id="feedback12" class="feedback"><b>Réponse :</b> Jacques Lacombe.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(12, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">13. Qui est René par rapport à François ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q13" value="incorrect"> Son frère</label>
+                 <label><input type="radio" name="q13" value="correct"> Son meilleur ami et camarade de classe</label>
+                 <label><input type="radio" name="q13" value="incorrect"> Son cousin</label>
+             </div>
+             <div id="feedback13" class="feedback"><b>Réponse :</b> Son ami, aussi précoce que lui, avec qui il partage ses premières "incartades".</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(13, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">14. Quelle est l'attitude du père de François face à la liaison ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q14" value="correct"> Une complicité mêlée d'inquiétude, avant de s'y opposer</label>
+                 <label><input type="radio" name="q14" value="incorrect"> Une opposition violente dès le début</label>
+                 <label><input type="radio" name="q14" value="incorrect"> Une ignorance totale de la situation</label>
+             </div>
+             <div id="feedback14" class="feedback"><b>Réponse :</b> Il est d'abord inconsciemment complice, ravi de la précocité de son fils, avant de s'effrayer.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(14, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">15. Comment François décrit-il son propre caractère ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q15" value="incorrect"> Romantique et passionné</label>
+                 <label><input type="radio" name="q15" value="incorrect"> Timide et respectueux</label>
+                 <label><input type="radio" name="q15" value="correct"> Lucide, cynique et manipulateur</label>
+             </div>
+             <div id="feedback15" class="feedback"><b>Réponse :</b> Il s'analyse avec une lucidité froide, reconnaissant sa propre cruauté et son égoïsme.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(15, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">16. Quelle est la principale faiblesse de Marthe dans sa relation avec François ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q16" value="correct"> Sa dépendance affective et sa soumission</label>
+                 <label><input type="radio" name="q16" value="incorrect"> Son ambition sociale</label>
+                 <label><input type="radio" name="q16" value="incorrect"> Son indifférence</label>
+             </div>
+             <div id="feedback16" class="feedback"><b>Réponse :</b> Elle devient de plus en plus dépendante de François, acceptant ses caprices et ses cruautés.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(16, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">17. Quel rôle joue Svéa, la jeune Suédoise ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q17" value="incorrect"> Elle devient la nouvelle amante de François</label>
+                 <label><input type="radio" name="q17" value="correct"> Elle est un intermède qui révèle l'infidélité et la cruauté de François</label>
+                 <label><input type="radio" name="q17" value="incorrect"> Elle dénonce la liaison de François et Marthe</label>
+             </div>
+             <div id="feedback17" class="feedback"><b>Réponse :</b> François la séduit par "gourmandise" et la trahit, ce qui provoque une crise avec Marthe.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(17, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">18. Qui sont les Marin ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q18" value="incorrect"> Les parents de François</label>
+                 <label><input type="radio" name="q18" value="correct"> Les voisins et propriétaires de Marthe qui l'espionnent</label>
+                 <label><input type="radio" name="q18" value="incorrect"> Les beaux-parents de Marthe</label>
+             </div>
+             <div id="feedback18" class="feedback"><b>Réponse :</b> Les voisins d'en-dessous qui organisent un "raout-surprise" pour surprendre les amants.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(18, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">19. Quelle est la réaction de la mère de Marthe face à la liaison ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q19" value="correct"> Une désapprobation hypocrite, admirant secrètement la transgression de sa fille</label>
+                 <label><input type="radio" name="q19" value="incorrect"> Un soutien inconditionnel</label>
+                 <label><input type="radio" name="q19" value="incorrect"> Une colère explosive</label>
+             </div>
+             <div id="feedback19" class="feedback"><b>Réponse :</b> Le narrateur suggère qu'elle admire Marthe de "tromper son mari, ce qu'elle-même n'avait jamais osé faire".</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(19, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">20. Au début, qu'est-ce que François n'aime pas chez Marthe ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q20" value="incorrect"> Son rire</label>
+                 <label><input type="radio" name="q20" value="correct"> Ses goûts en littérature et ses aquarelles</label>
+                 <label><input type="radio" name="q20" value="incorrect"> Sa façon de s'habiller</label>
+             </div>
+             <div id="feedback20" class="feedback"><b>Réponse :</b> Il est charmé qu'elle aime Baudelaire, mais "d'une façon qui n'était pourtant pas la [sienne]". Il trouve ses aquarelles ridicules.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(20, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">21. Le titre "Le Diable au corps" fait principalement référence à :</p>
+             <div class="options">
+                 <label><input type="radio" name="q21" value="incorrect"> Une possession démoniaque</label>
+                 <label><input type="radio" name="q21" value="correct"> La pulsion du désir et de la transgression à l'adolescence</label>
+                 <label><input type="radio" name="q21" value="incorrect"> La cruauté de la guerre</label>
+             </div>
+             <div id="feedback21" class="feedback"><b>Réponse :</b> Le titre symbolise l'énergie vitale, le désir et l'esprit de révolte de l'adolescence.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(21, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">22. Quel thème n'est PAS central dans le roman ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q22" value="incorrect"> L'adultère</label>
+                 <label><input type="radio" name="q22" value="correct"> L'héroïsme militaire</label>
+                 <label><input type="radio" name="q22" value="incorrect"> La psychologie de l'adolescence</label>
+             </div>
+             <div id="feedback22" class="feedback"><b>Réponse :</b> L'héroïsme militaire est totalement absent, voire moqué par l'indifférence du narrateur.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(22, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">23. Le style d'écriture de Radiguet, qualifié d'"écriture blanche", se caractérise par :</p>
+             <div class="options">
+                 <label><input type="radio" name="q23" value="incorrect"> Une abondance de métaphores et d'images poétiques</label>
+                 <label><input type="radio" name="q23" value="correct"> Une neutralité, une sobriété et une précision qui contrastent avec la violence du sujet</label>
+                 <label><input type="radio" name="q23" value="incorrect"> Un langage très familier et argotique</label>
+             </div>
+             <div id="feedback23" class="feedback"><b>Réponse :</b> C'est un style d'une grande maîtrise classique, presque froid, qui rend l'analyse psychologique encore plus percutante.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(23, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">24. La relation entre François et Marthe est souvent décrite comme :</p>
+             <div class="options">
+                 <label><input type="radio" name="q24" value="correct"> Un huis clos psychologique qui les isole du monde</label>
+                 <label><input type="radio" name="q24" value="incorrect"> Une idylle romantique et pure</label>
+                 <label><input type="radio" name="q24" value="incorrect"> Une relation purement physique et sans sentiments</label>
+             </div>
+             <div id="feedback24" class="feedback"><b>Réponse :</b> Leur passion les coupe de la réalité extérieure, créant leur propre monde avec ses propres règles.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(24, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">25. La citation "Le bonheur est égoïste" est prononcée par le narrateur après :</p>
+             <div class="options">
+                 <label><input type="radio" name="q25" value="incorrect"> Avoir reçu une lettre de Marthe</label>
+                 <label><input type="radio" name="q25" value="correct"> Une remarque de la mère de Marthe, alors que le père et les frères de François s'ennuyaient</label>
+                 <label><input type="radio" name="q25" value="incorrect"> Avoir appris la grossesse de Marthe</label>
+             </div>
+             <div id="feedback25" class="feedback"><b>Réponse :</b> Cette phrase conclut le chapitre sur leur première promenade, montrant comment son bonheur avec Marthe le rend indifférent à l'ennui des autres.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(25, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">26. Quel sentiment domine chez François quand il apprend la grossesse de Marthe ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q26" value="correct"> La consternation face à une responsabilité écrasante</label>
+                 <label><input type="radio" name="q26" value="incorrect"> La fierté paternelle</label>
+                 <label><input type="radio" name="q26" value="incorrect"> La jalousie, pensant que l'enfant n'est pas de lui</label>
+             </div>
+             <div id="feedback26" class="feedback"><b>Réponse :</b> Il est d'abord "stupéfié" et consterné par cette nouvelle qui menace sa jeunesse et sa liberté.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(26, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">27. Comment le narrateur justifie-t-il sa cruauté envers Marthe ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q27" value="correct"> Comme une "mue de l'amour devenant passion"</label>
+                 <label><input type="radio" name="q27" value="incorrect"> Comme une vengeance contre son mari</label>
+                 <label><input type="radio" name="q27" value="incorrect"> Il ne la justifie jamais, il ne s'en rend pas compte</label>
+             </div>
+             <div id="feedback27" class="feedback"><b>Réponse :</b> Dans un passage lucide, il analyse sa "taquinerie féroce" comme une transformation de son amour en passion.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(27, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">28. Le thème de l'ordre face au désordre est incarné par l'opposition entre :</p>
+             <div class="options">
+                 <label><input type="radio" name="q28" value="incorrect"> François et René</label>
+                 <label><input type="radio" name="q28" value="correct"> Jacques (le devoir, la guerre) et la liaison des amants (la passion, le chaos)</label>
+                 <label><input type="radio" name="q28" class="incorrect"> Paris et la campagne</label>
+             </div>
+             <div id="feedback28" class="feedback"><b>Réponse :</b> La liaison est une bulle de désordre et de passion qui ne peut exister que parce que l'ordre (Jacques, la société) est absent.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(28, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">29. Quel est le paradoxe du style du roman ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q29" value="correct"> La froideur et la clarté du style pour décrire une passion brûlante et confuse</label>
+                 <label><input type="radio" name="q29" value="incorrect"> La complexité du style pour décrire une histoire très simple</label>
+                 <label><input type="radio" name="q29" value="incorrect"> L'humour du style pour décrire une histoire tragique</label>
+             </div>
+             <div id="feedback29" class="feedback"><b>Réponse :</b> Ce contraste est une des grandes forces de l'écriture de Radiguet.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(29, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">30. La fin du livre suggère que :</p>
+             <div class="options">
+                 <label><input type="radio" name="q30" value="incorrect"> François va élever son fils</label>
+                 <label><input type="radio" name="q30" value="incorrect"> Jacques a tout pardonné</label>
+                 <label><input type="radio" name="q30" value="correct"> L'ordre social triomphe (l'enfant aura une existence "raisonnable" avec Jacques)</label>
+             </div>
+             <div id="feedback30" class="feedback"><b>Réponse :</b> La mort de Marthe met fin à la transgression, et l'enfant est "sauvé" en étant réintégré dans une vie normale avec Jacques comme père officiel.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(30, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">31. En quelle année "Le Diable au corps" a-t-il été publié ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q31" value="incorrect"> 1918</label>
+                 <label><input type="radio" name="q31" value="correct"> 1923</label>
+                 <label><input type="radio" name="q31" value="incorrect"> 1930</label>
+             </div>
+             <div id="feedback31" class="feedback"><b>Réponse :</b> 1923, la même année que la mort de Radiguet.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(31, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">32. Quel âge avait Raymond Radiguet lorsqu'il est mort ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q32" value="correct"> 20 ans</label>
+                 <label><input type="radio" name="q32" value="incorrect"> 25 ans</label>
+                 <label><input type="radio" name="q32" value="incorrect"> 32 ans</label>
+             </div>
+             <div id="feedback32" class="feedback"><b>Réponse :</b> 20 ans, ce qui fait de lui une figure mythique de la littérature.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(32, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">33. Qui était le célèbre mentor de Raymond Radiguet ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q33" value="incorrect"> André Gide</label>
+                 <label><input type="radio" name="q33" value="correct"> Jean Cocteau</label>
+                 <label><input type="radio" name="q33" value="incorrect"> Marcel Proust</label>
+             </div>
+             <div id="feedback33" class="feedback"><b>Réponse :</b> Jean Cocteau, qui l'a introduit dans les cercles artistiques parisiens.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(33, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">34. Quel autre roman Radiguet a-t-il publié (à titre posthume) ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q34" value="incorrect"> L'Écume des jours</label>
+                 <label><input type="radio" name="q34" value="correct"> Le Bal du comte d'Orgel</label>
+                 <label><input type="radio" name="q34" value="incorrect"> La Promesse de l'aube</label>
+             </div>
+             <div id="feedback34" class="feedback"><b>Réponse :</b> Le Bal du comte d'Orgel, son second et dernier roman.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(34, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">35. Pourquoi le livre a-t-il été qualifié de "scandaleux" à sa sortie ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q35" value="incorrect"> Pour ses critiques du capitalisme</label>
+                 <label><input type="radio" name="q35" value="correct"> Pour son traitement jugé immoral de l'adultère pendant la guerre</label>
+                 <label><input type="radio" name="q35" value="incorrect"> Pour son langage jugé trop vulgaire</label>
+             </div>
+             <div id="feedback35" class="feedback"><b>Réponse :</b> L'histoire d'une femme de poilu infidèle était une attaque frontale à la morale patriotique de l'époque.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(35, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">36. Radiguet appartenait-il à un mouvement littéraire précis comme le surréalisme ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q36" value="correct"> Non, son style est plutôt classique et indépendant</label>
+                 <label><input type="radio" name="q36" value="incorrect"> Oui, il était un leader du mouvement dadaïste</label>
+                 <label><input type="radio" name="q36" value="incorrect"> Oui, il était un membre important du groupe surréaliste</label>
+             </div>
+             <div id="feedback36" class="feedback"><b>Réponse :</b> Non, il a fréquenté ces cercles mais a conservé un style très personnel et d'inspiration classique.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(36, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">37. Quel peintre a réalisé un célèbre portrait de Raymond Radiguet ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q37" value="incorrect"> Picasso</label>
+                 <label><input type="radio" name="q37" value="correct"> Modigliani</label>
+                 <label><input type="radio" name="q37" value="incorrect"> Matisse</label>
+             </div>
+             <div id="feedback37" class="feedback"><b>Réponse :</b> Modigliani, en 1915. Ce portrait est souvent utilisé en couverture du livre.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(37, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">38. Le roman est-il considéré comme autobiographique ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q38" value="correct"> Il s'inspire d'une liaison que Radiguet a eue, mais reste une fiction</label>
+                 <label><input type="radio" name="q38" value="incorrect"> C'est une pure invention sans lien avec sa vie</label>
+                 <label><input type="radio" name="q38" value="incorrect"> C'est un récit factuel de sa vie</label>
+             </div>
+             <div id="feedback38" class="feedback"><b>Réponse :</b> Radiguet a eu une liaison avec une voisine pendant la guerre, mais il a toujours insisté sur le caractère romanesque de l'œuvre.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(38, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">39. Quel livre célèbre a été publié la même année que "Le Diable au corps" (1923) et traite aussi de l'initiation amoureuse adolescente ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q39" value="correct"> Le Blé en herbe de Colette</label>
+                 <label><input type="radio" name="q39" value="incorrect"> La Condition humaine de Malraux</label>
+                 <label><input type="radio" name="q39" value="incorrect"> Voyage au bout de la nuit de Céline</label>
+             </div>
+             <div id="feedback39" class="feedback"><b>Réponse :</b> Le Blé en herbe. Mettre ces deux œuvres en parallèle est un excellent point d'analyse.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(39, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">40. De quelle maladie Radiguet est-il mort ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q40" value="incorrect"> La tuberculose</label>
+                 <label><input type="radio" name="q40" value="correct"> La fièvre typhoïde</label>
+                 <label><input type="radio" name="q40" value="incorrect"> La grippe espagnole</label>
+             </div>
+             <div id="feedback40" class="feedback"><b>Réponse :</b> La fièvre typhoïde.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(40, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">41. Quel journal François promet-il d'apporter à Marthe ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q41" value="incorrect"> Le Figaro</label>
+                 <label><input type="radio" name="q41" value="correct"> Le Mot</label>
+                 <label><input type="radio" name="q41" value="incorrect"> L'Humanité</label>
+             </div>
+             <div id="feedback41" class="feedback"><b>Réponse :</b> La collection du journal Le Mot et "Une saison en enfer" de Rimbaud.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(41, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">42. Quel est le premier mensonge que François dit à Marthe ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q42" value="incorrect"> Qu'il est plus âgé</label>
+                 <label><input type="radio" name="q42" value="correct"> Qu'il travaille souvent dans des académies de dessin</label>
+                 <label><input type="radio" name="q42" value="incorrect"> Qu'il a lu tous les livres de son père</label>
+             </div>
+             <div id="feedback42" class="feedback"><b>Réponse :</b> Il prétend aller dans des académies de dessin pour l'impressionner et lui proposer de l'y conduire.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(42, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">43. Pourquoi François est-il en colère quand Marthe déchire une lettre de Jacques ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q43" value="correct"> Il déteste cette "bravade" et le remords qu'elle ressentira</label>
+                 <label><input type="radio" name="q43" value="incorrect"> Il voulait la lire pour connaître les secrets de Jacques</label>
+                 <label><input type="radio" name="q43" value="incorrect"> Il pense que c'est un manque de respect</label>
+             </div>
+             <div id="feedback43" class="feedback"><b>Réponse :</b> Il analyse sa psychologie et sait qu'elle regrettera ce geste impulsif.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(43, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">44. Qui dit : "Tu es un enfant. Tu ne comprends donc pas que si je te demande de t'en aller, c'est que je t'aime" ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q44" value="correct"> Marthe</label>
+                 <label><input type="radio" name="q44" value="incorrect"> La mère de François</label>
+                 <label><input type="radio" name="q44" value="incorrect"> Le père de François</label>
+             </div>
+             <div id="feedback44" class="feedback"><b>Réponse :</b> Marthe, lors de leur première grande scène après qu'il l'a embrassée.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(44, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">45. Quel effet la grossesse a-t-elle sur la relation, selon François ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q45" value="incorrect"> Elle les rapproche plus que jamais</label>
+                 <label><input type="radio" name="q45" value="correct"> Il n'embrasse plus Marthe, mais son enfant ; elle devient une mère</label>
+                 <label><input type="radio" name="q45" value="incorrect"> Elle rend Marthe plus désirable</label>
+             </div>
+             <div id="feedback45" class="feedback"><b>Réponse :</b> Il écrit : "Marthe n'était plus ma maîtresse, mais une mère."</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(45, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">46. Où se trouve la maison des Grangier (la famille de Marthe) ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q46" value="correct"> Au bord de la Marne</label>
+                 <label><input type="radio" name="q46" value="incorrect"> Dans le centre de Paris</label>
+                 <label><input type="radio" name="q46" value="incorrect"> En Normandie</label>
+             </div>
+             <div id="feedback46" class="feedback"><b>Réponse :</b> Au bord de la Marne, ce qui permet les promenades en barque.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(46, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">47. Comment Marthe apprend-elle finalement l'infidélité de François avec Svéa ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q47" value="correct"> Par une lettre de son propriétaire</label>
+                 <label><input type="radio" name="q47" value="incorrect"> François le lui avoue</label>
+                 <label><input type="radio" name="q47" value="incorrect"> Svéa le lui dit</label>
+             </div>
+             <div id="feedback47" class="feedback"><b>Réponse :</b> Le propriétaire lui écrit pour se plaindre qu'il a emmené "une femme" dans son appartement.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(47, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">48. Que fait François la nuit de la veille du départ de Marthe pour Granville ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q48" value="incorrect"> Il lui écrit une longue lettre d'adieu</label>
+                 <label><input type="radio" name="q48" value="correct"> Il s'endort après un quart d'heure et perd les dernières heures</label>
+                 <label><input type="radio" name="q48" value="incorrect"> Ils se disputent violemment</label>
+             </div>
+             <div id="feedback48" class="feedback"><b>Réponse :</b> Il s'endort très vite, ce qui l'enrage à son réveil.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(48, this)">Vérifier la réponse</button>
+         </div>
+         <div class="question-container">
+             <p class="question">49. Pourquoi François se met-il à douter de la paternité de l'enfant ?</p>
+             <div class="options">
+                 <label><input type="radio" name="q49" value="correct"> L'enfant naît en janvier, ce qui coïncide avec une permission de Jacques neuf mois plus tôt</label>
+                 <label><input type="radio" name="q49" value="incorrect"> Marthe le lui avoue dans un moment de colère</label>
+                 <label><input type="radio" name="q49" value="incorrect"> L'enfant ne lui ressemble pas du tout</label>
+             </div>
+             <div id="feedback49" class="feedback"><b>Réponse :</b> La naissance du neveu du petit Grangier en janvier lui fait faire le calcul pour son propre enfant, attendu en mars, et le plonge dans le doute.</div>
+             <button type="button" class="check-btn" onclick="checkSingleAnswer(49, this)">Vérifier la réponse</button>
+         </div>
+
+        <!-- Dernière question avec son bouton -->
+        <div class="question-container">
+            <p class="question">50. Quelle est l'ultime révélation faite par Jacques à la fin ?</p>
+            <div class="options">
+                <label><input type="radio" name="q50" value="incorrect"> Que Marthe ne l'a jamais aimé</label>
+                <label><input type="radio" name="q50" value="correct"> Que Marthe est morte en appelant François ("Pauvre petit !")</label>
+                <label><input type="radio" name="q50" value="incorrect"> Qu'il savait tout depuis le début</label>
+            </div>
+            <div id="feedback50" class="feedback"><b>Réponse :</b> "Ma femme est morte en l'appelant. Pauvre petit !" Cette phrase finale donne à François une victoire tragique et posthume.</div>
+            <button type="button" class="check-btn" onclick="checkSingleAnswer(50, this)">Vérifier la réponse</button>
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    const totalQuestions = 50;
+    const form = document.getElementById('qcmForm');
+    const progressBar = document.getElementById('progressBar');
+    const scoreDiv = document.getElementById('score');
+
+    let currentScore = 0;
+    let answeredQuestions = 0;
+
+    function updateProgressAndScore() {
+        // Mettre à jour la barre de progression
+        answeredQuestions++;
+        const progressPercentage = (answeredQuestions / totalQuestions) * 100;
+        progressBar.style.width = progressPercentage + '%';
+        progressBar.textContent = `${answeredQuestions}/${totalQuestions}`;
+
+        // Mettre à jour le score affiché
+        scoreDiv.innerHTML = `Score : ${currentScore} / ${totalQuestions}`;
+        
+        // Si toutes les questions sont répondues, colorer le score final
+        if (answeredQuestions === totalQuestions) {
+             if (currentScore >= 40) {
+                scoreDiv.className = "good";
+                scoreDiv.innerHTML += " - Excellent !";
+            } else if (currentScore >= 25) {
+                scoreDiv.className = "medium";
+                scoreDiv.innerHTML += " - Bon score !";
+            } else {
+                scoreDiv.className = "bad";
+                scoreDiv.innerHTML += " - Peut mieux faire !";
+            }
+        }
+    }
+
+    function checkSingleAnswer(questionNumber, buttonElement) {
+        const radios = form.elements['q' + questionNumber];
+        const feedback = document.getElementById('feedback' + questionNumber);
+        const optionsContainer = radios[0].closest('.options');
+        let userAnswer = null;
+        let selectedLabel = null;
+        let correctLabel = null;
+
+        for (const radio of radios) {
+            if (radio.value === 'correct') {
+                correctLabel = radio.parentElement;
+            }
+            if (radio.checked) {
+                userAnswer = radio.value;
+                selectedLabel = radio.parentElement;
+            }
+            // Désactiver toutes les options
+            radio.disabled = true;
+        }
+
+        // Si aucune réponse n'est sélectionnée, ne rien faire
+        if (userAnswer === null) {
+            alert("Veuillez sélectionner une réponse avant de vérifier.");
+            for (const radio of radios) { radio.disabled = false; } // Réactiver les boutons
+            return;
+        }
+
+        // Marquer le conteneur d'options comme "répondu"
+        optionsContainer.classList.add('answered');
+
+        // Afficher le feedback et colorer les réponses
+        feedback.style.display = 'block';
+
+        if (userAnswer === 'correct') {
+            currentScore++;
+            feedback.className = 'feedback correct';
+            selectedLabel.classList.add('user-correct');
+        } else {
+            feedback.className = 'feedback incorrect';
+            selectedLabel.classList.add('user-incorrect');
+            correctLabel.classList.add('reveal-correct'); // Montrer la bonne réponse
+        }
+        
+        // Désactiver le bouton "Vérifier"
+        buttonElement.disabled = true;
+        buttonElement.textContent = 'Répondu';
+
+        // Mettre à jour la progression et le score
+        updateProgressAndScore();
+    }
+</script>
+
+</body>
+</html>
